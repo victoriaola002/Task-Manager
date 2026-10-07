@@ -27,6 +27,46 @@ app.get("/api/tasks/:id", (req, res)=>{
    } 
    res.json(task)
 })
+// update
+app.put("/api/tasks/:id", (req, res) => {
+    const id = Number(req.params.id);
+
+    const task = tasks.find(task => task.id === id);
+
+    if (!task) {
+        return res.status(404).json({
+            message: "Task not found"
+        });
+    }
+
+    task.title = req.body.title;
+    task.description = req.body.description;
+
+    res.json({
+        message: "Task updated successfully",
+        task
+    });
+});
+
+
+// delete a task
+app.delete("/api/tasks/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const taskIndex = tasks.findIndex(task => task.id === id);
+
+    if (taskIndex === -1) {
+        return res.status(404).json({
+            message: "Task not found"
+        });
+    }
+
+    const deletedTask = tasks.splice(taskIndex, 1);
+
+    res.json({
+        message: "Task deleted successfully",
+        task: deletedTask[0]
+    });
+});
 // create a task
 app.post("/api/tasks/", (req, res) =>{
     const newTask = {
