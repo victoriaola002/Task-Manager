@@ -16,42 +16,82 @@ const InputTask = ({tasks, setTasks}) => {
     console.log(tasks);
     
  }, [tasks])
-  const handleSubmit = () => {
-    const newErrors = {};
-    const today = new Date();
-    const selectedDate = new Date(dueDate);
-    if (!title.trim()) {
-      newErrors.title = "Task Title is required";
-    }
-    if (!description.trim()) {
-      newErrors.description = "Task Description is required.";
-    }
-    if (!tag) {
-      newErrors.tag = "Please select a tag";
-    }
-    if (!dueDate) {
-      newErrors.dueDate = "Please set a DueDate";
-    } else if (selectedDate < today) {
-      newErrors.dueDate = "Due date cannot be in the past";
-    }
-    if (!category) {
-      newErrors.category = "Please select a category";
-    }
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) {
-      return;
-    }
-    setSuccess(true)
-    const newTasks = {
-        title, 
-        description, 
-        dueDate, 
-        category, 
-        tag,
-         completed};
-    setTasks([...tasks, newTasks])  
-     
+ 
+const handleSubmit = async () => {
+  const newErrors = {};
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const selectedDate = new Date(dueDate);
+
+  if (!title.trim()) {
+    newErrors.title = "Task Title is required";
   }
+
+  if (!description.trim()) {
+    newErrors.description = "Task Description is required.";
+  }
+
+  if (!tag) {
+    newErrors.tag = "Please select a tag";
+  }
+
+  if (!dueDate) {
+    newErrors.dueDate = "Please set a DueDate";
+  } else if (selectedDate < today) {
+    newErrors.dueDate = "Due date cannot be in the past";
+  }
+
+  if (!category) {
+    newErrors.category = "Please select a category";
+  }
+
+  setErrors(newErrors);
+
+  if (Object.keys(newErrors).length > 0) {
+    return;
+  }
+
+  const newTask = {
+    title: title.trim(),
+    description: description.trim(),
+    dueDate,
+    category,
+    tag,
+    completed
+  };
+
+  try {
+    const response = await fetch("http://localhost:5000/api/tasks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newTask)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to create task");
+    }
+
+    setTasks([...tasks, data.task]);
+    setSuccess(true);
+
+    setTitle("");
+    setdescription("");
+    setDueDate("");
+    setCategory("");
+    setTag("");
+    setCompleted(false);
+
+  } catch (error) {
+    console.error("Error creating task:", error);
+    setSuccess(false);
+    alert("Could not create task. Please check that your backend is running.");
+  }
+};
    const updateTask = (title) =>{
     setTasks(
         tasks.map((task)=>

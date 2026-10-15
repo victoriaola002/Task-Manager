@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
+import React from 'react'
 
-const taskSearch = ({ searchTerm, setSearchTerm }) => {
+const TaskSearch = ({ searchTerm, setSearchTerm }) => {
   return (
     <div className="w-full max-w-md mt-3">
       <input
@@ -14,4 +14,4 @@ const taskSearch = ({ searchTerm, setSearchTerm }) => {
   );
 };
 
-export default taskSearch
+export default TaskSearch
