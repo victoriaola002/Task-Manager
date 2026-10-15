@@ -14,6 +14,15 @@ const InputEdit = ({tasks, setTasks}) => {
 const [dueDate, setDueDate] = useState(taskToEdit?.dueDate || "");
 const [category, setCategory] = useState(taskToEdit?.category || "");
 const [tag, setTag] = useState(taskToEdit?.tag || "");
+
+const handleUpdate = () => {
+  const updatedTasks = tasks.map((task)=>
+ task.title === taskTitle ? {...task, title, description, dueDate, category, tag} : task
+ );
+ setTasks(updatedTasks);
+}
+   
+
  
   return (
     <div className="mx-auto w-10/12">
@@ -84,7 +93,7 @@ const [tag, setTag] = useState(taskToEdit?.tag || "");
         </div>
       </fieldset>
 
-      <button className=" my-10 w-full py-3  bg-[#974FD0] text-[#FAF9FB] rounded  text-xl">
+      <button onClick={handleUpdate} className=" my-10 w-full py-3  bg-[#974FD0] text-[#FAF9FB] rounded  text-xl">
         Done
       </button>
       <div className="text-center underline text-[#974FD0] font-medium text-xl">
